@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Voice Assistant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #output {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Simple Voice Assistant</h1>
+    <button onclick="startListening()">Start Listening</button>
+    <div id="output"></div>
+
+    <script>
+        // Initialize Speech Recognition (Speech-to-Text)
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US';
+        recognition.continuous = false;
+
+        // Initialize Speech Synthesis (Text-to-Speech)
+        const synth = window.speechSynthesis;
+
+        // Function to start listening for voice input
+        function startListening() {
+            recognition.start();
+            document.getElementById('output').textContent = "Listening...";
+        }
+
+        // Event when speech is recognized
+        recognition.onresult = function(event) {
+            const speechToText = event.results[0][0].transcript;
+            document.getElementById('output').textContent = `You said: ${speechToText}`;
+
+            // Simple response based on user input
+            respondToCommand(speechToText);
+        };
+
+        // Event when there's an error with recognition
+        recognition.onerror = function(event) {
+            document.getElementById('output').textContent = "Sorry, I couldn't hear you. Please try again.";
+        };
+
+        // Function to respond with speech (Text-to-Speech)
+        function respondToCommand(command) {
+            let response = "";
+
+            // Sample responses based on commands
+            if (command.includes("hello")) {
+                response = "Hello! How can I assist you today?";
+            } else if (command.includes("your name")) {
+                response = "I am your simple voice assistant!";
+            } else if (command.includes("time")) {
+                response = "The current time is " + new Date().toLocaleTimeString();
+            } else {
+                response = "Sorry, I didn't understand that. Try saying 'hello' or 'what is your name'.";
+            }
+
+            // Speak the response
+            const utterance = new SpeechSynthesisUtterance(response);
+            synth.speak(utterance);
+        }
+    </script>
+
+</body>
+</html>
